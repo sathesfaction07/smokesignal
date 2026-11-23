@@ -1,4 +1,4 @@
-# Review Risk Analyzer
+# Smokesignal
 
 A 4-stage AI pipeline that analyzes Amazon product reviews to detect safety and quality risks. Given an ASIN (Amazon product ID), it scrapes customer reviews, scans for complaint keywords, groups themes with Amazon Nova Micro, assesses risk with Claude Haiku 4.5, and routes flagged products to SNS email alerts. Cost per product: ~$0.004. Daily cache prevents reprocessing; budget enforcement stops at a configurable spending cap.
 
@@ -97,7 +97,7 @@ The fetcher yields results one at a time, so the UI updates in real time as each
 ## Project Structure
 
 ```
-bedrock-review-intel/
+smokesignal/
 ├── app.py                      Flask server, SSE streaming
 ├── config.py                   AWS region, model IDs, pricing, marketplaces
 ├── requirements.txt            boto3, flask, selenium, tiktoken, strands-agents

@@ -125,7 +125,7 @@ Vista supports all 25 Amazon retail marketplaces. Select the target marketplace 
 ## Project File Structure — What Each File Does
 
 ```
-bedrock-review-intel/
+smokesignal/
 │
 ├── app.py                              ← The web server (starts everything)
 ├── config.py                           ← All settings in one place
@@ -439,7 +439,7 @@ aws configure --profile vista
 # Click "Confirm subscription" link
 
 # Step 5: Install Python dependencies
-cd bedrock-review-intel
+cd smokesignal
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -480,7 +480,7 @@ REM Output format: json
 REM Step 4: Confirm email subscription (check inbox, click link)
 
 REM Step 5: Install Python dependencies
-cd bedrock-review-intel
+cd smokesignal
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
@@ -503,7 +503,7 @@ REM Open browser: http://localhost:5000
 # Step 1-4: Same as above (AWS Console steps)
 
 # Step 5: Install Python dependencies
-cd bedrock-review-intel
+cd smokesignal
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -527,7 +527,7 @@ python app.py
 #### macOS / Linux
 
 ```bash
-cd bedrock-review-intel
+cd smokesignal
 source .venv/bin/activate        # If using virtual environment
 export AWS_PROFILE=vista
 export SNS_TOPIC_ARN=arn:aws:sns:us-east-1:YOUR_AWS_ACCOUNT_ID:bedrock-processor-alerts
@@ -537,7 +537,7 @@ python app.py
 #### Windows Command Prompt
 
 ```cmd
-cd bedrock-review-intel
+cd smokesignal
 .venv\Scripts\activate
 set AWS_PROFILE=vista
 set SNS_TOPIC_ARN=arn:aws:sns:us-east-1:YOUR_AWS_ACCOUNT_ID:bedrock-processor-alerts
@@ -547,7 +547,7 @@ python app.py
 #### Windows PowerShell
 
 ```powershell
-cd bedrock-review-intel
+cd smokesignal
 .\.venv\Scripts\Activate.ps1
 $env:AWS_PROFILE = "vista"
 $env:SNS_TOPIC_ARN = "arn:aws:sns:us-east-1:YOUR_AWS_ACCOUNT_ID:bedrock-processor-alerts"
@@ -690,13 +690,13 @@ If a test suite is added later, the recommended approach is:
 # Press Ctrl+C in the terminal running python app.py
 
 # Delete today's cache (forces fresh analysis next run)
-rm -rf bedrock-review-intel/.cache/
+rm -rf smokesignal/.cache/
 
 # Deactivate virtual environment
 deactivate
 
 # Full local teardown (removes venv and cache)
-cd bedrock-review-intel
+cd smokesignal
 rm -rf .venv/ .cache/ __pycache__/ agents/__pycache__/ monitoring/__pycache__/
 ```
 
@@ -726,7 +726,7 @@ aws configure --profile vista set aws_access_key_id ""
 
 ```bash
 # Clear cache only (next run re-processes all ASINs)
-rm -rf bedrock-review-intel/.cache/
+rm -rf smokesignal/.cache/
 
 # Reset daily budget counter (restart the app — budget resets each calendar day automatically)
 # No manual reset needed; daily_cache.py handles this on startup.

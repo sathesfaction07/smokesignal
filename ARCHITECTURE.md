@@ -1,4 +1,4 @@
-# Review Risk Analyzer — Technical Architecture
+# Smokesignal — Technical Architecture
 
 ## Overview
 
