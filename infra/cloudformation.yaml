@@ -1,0 +1,155 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Vista — Infrastructure (SNS, CloudWatch, IAM)"
+
+Parameters:
+  AlertEmailList:
+    Type: CommaDelimitedList
+    Description: "Comma-separated email addresses for FLAG_FOR_REMOVAL and FLAG_FOR_REVIEW alerts. Example: alice@example.com,bob@example.com"
+    Default: ""
+
+Conditions:
+  HasEmails: !Not [!Equals [!Select [0, !Ref AlertEmailList], ""]]
+
+Resources:
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: bedrock-processor-alerts
+      DisplayName: Vista Alerts
+
+  AlertSubscription0:
+    Type: AWS::SNS::Subscription
+    Condition: HasEmails
+    Properties:
+      TopicArn: !Ref AlertTopic
+      Protocol: email
+      Endpoint: !Select [0, !Ref AlertEmailList]
+
+  HighFlagRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: ReviewIntel-HighFlagRate
+      AlarmDescription: "More than 5 products flagged in a single day"
+      Namespace: BedrockReviewIntel
+      MetricName: ProductFlagCount
+      Statistic: Sum
+      Period: 86400
+      EvaluationPeriods: 1
+      Threshold: 5
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref AlertTopic
+      TreatMissingData: notBreaching
+
+  AppUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: review-intel-deployer
+      ManagedPolicyArns:
+        - !Ref AppPolicy
+
+  AppAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref AppUser
+
+  AppPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: ReviewIntel-AppPermissions
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: BedrockInvoke
+            Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+              - bedrock:InvokeModelWithResponseStream
+            Resource:
+              - !Sub "arn:aws:bedrock:*::foundation-model/*"
+              - !Sub "arn:aws:bedrock:*:${AWS::AccountId}:inference-profile/*"
+          - Sid: BedrockDiscovery
+            Effect: Allow
+            Action:
+              - bedrock:ListFoundationModels
+              - bedrock:GetFoundationModel
+              - bedrock:ListInferenceProfiles
+              - bedrock:GetInferenceProfile
+            Resource: "*"
+          - Sid: SNSPublish
+            Effect: Allow
+            Action:
+              - sns:Publish
+            Resource:
+              - !Ref AlertTopic
+          - Sid: CloudWatchMetrics
+            Effect: Allow
+            Action:
+              - cloudwatch:PutMetricData
+            Resource: "*"
+
+
+  # ═══ Log Pipeline ═══
+  AppLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /review-intel/app
+      RetentionInDays: 14
+
+  ErrorMetricFilter:
+    Type: AWS::Logs::MetricFilter
+    Properties:
+      LogGroupName: !Ref AppLogGroup
+      FilterPattern: '{ $.level = "ERROR" }'
+      MetricTransformations:
+        - MetricName: AppErrorCount
+          MetricNamespace: BedrockReviewIntel
+          MetricValue: "1"
+          DefaultValue: 0
+
+  ErrorRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: ReviewIntel-ErrorRate
+      AlarmDescription: "More than 3 application errors in 5 minutes"
+      Namespace: BedrockReviewIntel
+      MetricName: AppErrorCount
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 3
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref AlertTopic
+      TreatMissingData: notBreaching
+
+  BudgetAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: ReviewIntel-BudgetHigh
+      AlarmDescription: "Daily LLM budget utilization exceeds 80%"
+      Namespace: BedrockReviewIntel
+      MetricName: BudgetUtilizationPct
+      Statistic: Maximum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 80
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref AlertTopic
+      TreatMissingData: notBreaching
+
+
+Outputs:
+  SNSTopicArn:
+    Description: "SNS Topic ARN — set as SNS_TOPIC_ARN environment variable"
+    Value: !Ref AlertTopic
+  AccessKeyId:
+    Description: "Access Key ID — use with aws configure"
+    Value: !Ref AppAccessKey
+  SecretAccessKey:
+    Description: "Secret Access Key — SAVE NOW, cannot retrieve later"
+    Value: !GetAtt AppAccessKey.SecretAccessKey
+  AppLogGroupName:
+    Description: "CloudWatch Log Group — ship app logs here"
+    Value: !Ref AppLogGroup

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vista</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'amazon-navy':   '#232f3e',
+            'amazon-orange': '#ff9900',
+            'amazon-teal':   '#007185',
+          },
+          boxShadow: {
+            'card': '0 2px 8px rgba(0,0,0,0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .progress-bar-fill { transition: width 0.5s ease; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen bg-gray-50 antialiased">
+
+  <!--
+    Tailwind class hint — keeps all dynamic classes compiled by the Play CDN.
+    Never visible to users.
+  -->
+  <div class="hidden" aria-hidden="true">
+    <span class="bg-green-50 bg-yellow-50 bg-orange-50 bg-red-50 bg-green-100 bg-yellow-100 bg-orange-100 bg-red-100 bg-gray-100"></span>
+    <span class="text-green-700 text-yellow-700 text-orange-700 text-red-700 text-gray-700"></span>
+    <span class="bg-green-500 bg-yellow-500 bg-orange-500 bg-red-500 bg-gray-300"></span>
+    <span class="text-amazon-teal text-amazon-navy text-amazon-orange border-amazon-teal shadow-card"></span>
+  </div>
+
+  <!-- ═══════════════════ HEADER ═══════════════════ -->
+  <header class="bg-amazon-navy shadow-md">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
+      <div class="w-8 h-8 rounded bg-amazon-orange flex items-center justify-center flex-shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amazon-navy" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+        </svg>
+      </div>
+      <h1 class="text-white text-lg font-semibold tracking-tight">Vista</h1>
+    </nav>
+  </header>
+
+  <!-- ═══════════════════ MAIN ═══════════════════ -->
+  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8">
+
+    <!-- ─── Pipeline Info Strip ─── -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+
+      <div id="strip-triage" class="bg-white rounded-xl border-2 border-gray-200 p-4 shadow-card transition-all duration-300">
+        <div class="flex items-center gap-2 mb-2">
+          <span id="ind-triage"
+                class="w-3 h-3 rounded-full bg-gray-300 flex-shrink-0 transition-all duration-300"></span>
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step 1</span>
+          <span id="chk-triage" class="hidden ml-auto text-green-600 font-bold text-sm">✓</span>
+        </div>
+        <h3 class="text-sm font-semibold text-amazon-navy mb-1">Triage</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Scans reviews for safety, quality, packaging, misleading, and disappointment signals</p>
+      </div>
+
+      <div id="strip-patterns" class="bg-white rounded-xl border-2 border-gray-200 p-4 shadow-card transition-all duration-300">
+        <div class="flex items-center gap-2 mb-2">
+          <span id="ind-patterns"
+                class="w-3 h-3 rounded-full bg-gray-300 flex-shrink-0 transition-all duration-300"></span>
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step 2</span>
+          <span id="chk-patterns" class="hidden ml-auto text-green-600 font-bold text-sm">✓</span>
+        </div>
+        <h3 class="text-sm font-semibold text-amazon-navy mb-1">Patterns</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Groups similar complaints into recurring themes using AI</p>
+      </div>
+
+      <div id="strip-safety" class="bg-white rounded-xl border-2 border-gray-200 p-4 shadow-card transition-all duration-300">
+        <div class="flex items-center gap-2 mb-2">
+          <span id="ind-safety"
+                class="w-3 h-3 rounded-full bg-gray-300 flex-shrink-0 transition-all duration-300"></span>
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step 3</span>
+          <span id="chk-safety" class="hidden ml-auto text-green-600 font-bold text-sm">✓</span>
+        </div>
+        <h3 class="text-sm font-semibold text-amazon-navy mb-1">Assess</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">AI evaluates overall product health and assigns a risk level</p>
+      </div>
+
+      <div id="strip-action" class="bg-white rounded-xl border-2 border-gray-200 p-4 shadow-card transition-all duration-300">
+        <div class="flex items-center gap-2 mb-2">
+          <span id="ind-action"
+                class="w-3 h-3 rounded-full bg-gray-300 flex-shrink-0 transition-all duration-300"></span>
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step 4</span>
+          <span id="chk-action" class="hidden ml-auto text-green-600 font-bold text-sm">✓</span>
+        </div>
+        <h3 class="text-sm font-semibold text-amazon-navy mb-1">Action</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Decides approve, monitor, flag for review or flag for removal</p>
+      </div>
+
+    </div>
+
+    <!-- ─── Input Card ─── -->
+    <div class="bg-white rounded-xl shadow-card border border-gray-200 p-6 mb-6">
+      <h2 class="text-base font-semibold text-amazon-navy mb-4">Analyze Products</h2>
+      <form id="analyze-form">
+        <div class="mb-4">
+          <label for="asins-input" class="block text-sm font-medium text-gray-700 mb-1.5">
+            ASINs <span class="font-normal text-gray-400">— comma separated</span>
+          </label>
+          <textarea
+            id="asins-input"
+            rows="3"
+            placeholder="B08N5WRWNW, B07XJ8C8F7, B09G9FPHY6"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 font-mono focus:outline-none focus:ring-2 focus:ring-amazon-teal focus:border-transparent resize-none transition-colors"
+          ></textarea>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
+          <div class="flex-1 min-w-0">
+            <label for="marketplace-select" class="block text-sm font-medium text-gray-700 mb-1.5">Marketplace</label>
+            <select
+              id="marketplace-select"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-amazon-teal focus:border-transparent"
+            >
+              <!-- Americas -->
+              <option value="amazon.com">🇺🇸 United States (amazon.com)</option>
+              <option value="amazon.ca">🇨🇦 Canada (amazon.ca)</option>
+              <option value="amazon.com.mx">🇲🇽 Mexico (amazon.com.mx)</option>
+              <option value="amazon.com.br">🇧🇷 Brazil (amazon.com.br)</option>
+              <option value="amazon.com.co">🇨🇴 Colombia (amazon.com.co)</option>
+              <!-- Europe -->
+              <option value="amazon.co.uk">🇬🇧 United Kingdom (amazon.co.uk)</option>
+              <option value="amazon.de">🇩🇪 Germany (amazon.de)</option>
+              <option value="amazon.fr">🇫🇷 France (amazon.fr)</option>
+              <option value="amazon.it">🇮🇹 Italy (amazon.it)</option>
+              <option value="amazon.es">🇪🇸 Spain (amazon.es)</option>
+              <option value="amazon.nl">🇳🇱 Netherlands (amazon.nl)</option>
+              <option value="amazon.se">🇸🇪 Sweden (amazon.se)</option>
+              <option value="amazon.pl">🇵🇱 Poland (amazon.pl)</option>
+              <option value="amazon.com.be">🇧🇪 Belgium (amazon.com.be)</option>
+              <option value="amazon.ie">🇮🇪 Ireland (amazon.ie)</option>
+              <option value="amazon.com.tr">🇹🇷 Turkey (amazon.com.tr)</option>
+              <!-- Middle East & Africa -->
+              <option value="amazon.ae">🇦🇪 UAE (amazon.ae)</option>
+              <option value="amazon.sa">🇸🇦 Saudi Arabia (amazon.sa)</option>
+              <option value="amazon.eg">🇪🇬 Egypt (amazon.eg)</option>
+              <option value="amazon.co.za">🇿🇦 South Africa (amazon.co.za)</option>
+              <option value="amazon.com.ng">🇳🇬 Nigeria (amazon.com.ng)</option>
+              <!-- Asia-Pacific -->
+              <option value="amazon.in">🇮🇳 India (amazon.in)</option>
+              <option value="amazon.co.jp">🇯🇵 Japan (amazon.co.jp)</option>
+              <option value="amazon.sg">🇸🇬 Singapore (amazon.sg)</option>
+              <option value="amazon.com.au">🇦🇺 Australia (amazon.com.au)</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            id="analyze-btn"
+            class="bg-amazon-orange hover:bg-yellow-400 text-amazon-navy font-semibold px-8 py-2.5 rounded-lg text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap flex-shrink-0"
+          >
+            Analyze
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ─── Progress Section (hidden by default) ─── -->
+    <div id="progress-section" class="hidden bg-white rounded-xl shadow-card border border-gray-200 p-5 mb-6">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-medium text-gray-600">Processing…</span>
+        <span id="progress-pct" class="text-sm font-semibold text-amazon-teal tabular-nums">0%</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2 mb-3 overflow-hidden">
+        <div id="progress-bar"
+             class="progress-bar-fill bg-amazon-orange h-2 rounded-full"
+             style="width: 0%"></div>
+      </div>
+      <p id="progress-status" class="text-xs text-gray-500">Initializing…</p>
+    </div>
+
+    <!-- ─── Results Section ─── -->
+    <div id="results-section" class="space-y-5"></div>
+
+  </main>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="mt-auto bg-amazon-navy text-gray-500 text-xs text-center py-3 px-4">
+    Vista &mdash; Internal Use Only &mdash; &copy; 2025 Amazon
+  </footer>
+
+  <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+  <script>
+    'use strict';
+
+    /* ──────────────────────────────────────────────────────────────
+       Constants
+    ────────────────────────────────────────────────────────────── */
+    const SAFETY_STYLES = {
+      'LOW':      { bg: 'bg-green-50',  dot: 'bg-green-500',  text: 'text-green-700',  label: 'LOW'      },
+      'MEDIUM':   { bg: 'bg-yellow-50', dot: 'bg-yellow-500', text: 'text-yellow-700', label: 'MEDIUM'   },
+      'HIGH':     { bg: 'bg-orange-50', dot: 'bg-orange-500', text: 'text-orange-700', label: 'HIGH'     },
+      'CRITICAL': { bg: 'bg-red-50',    dot: 'bg-red-500',    text: 'text-red-700',    label: 'CRITICAL' },
+    };
+
+    const CAT_EMOJI = {
+      quality: '⚙️', packaging: '📦', safety: '⚠️',
+      value: '💰', price: '💰', shipping: '🚚', delivery: '🚚',
+      misleading: '❗', disappointment: '😞', durability: '🔧',
+      performance: '📊', taste: '🍽️', smell: '👃', size: '📏',
+      fit: '👕', color: '🎨', defective: '🚫', broken: '🚫',
+      service: '💬', authenticity: '✅', counterfeit: '❌', fake: '❌',
+      instructions: '📋', assembly: '🔩', noise: '🔊', battery: '🔋',
+      weight: '⚖️', material: '🧱', comfort: '😊', design: '✏️',
+      appearance: '✨', description: '❗', listing: '❗',
+    };
+
+    // Ordered pipeline steps
+    const STRIP_ORDER = ['strip-triage', 'strip-patterns', 'strip-safety', 'strip-action'];
+
+    // Agent name → strip card ID  (case-insensitive after .toLowerCase())
+    const AGENT_MAP = {
+      triage: 'strip-triage', triaging: 'strip-triage',
+      pattern: 'strip-patterns', patterns: 'strip-patterns',
+      grouping: 'strip-patterns', cluster: 'strip-patterns',
+      assess: 'strip-safety', assessment: 'strip-safety',
+      risk: 'strip-safety', evaluate: 'strip-safety', evaluating: 'strip-safety',
+      action: 'strip-action', decision: 'strip-action',
+    };
+
+    /* ──────────────────────────────────────────────────────────────
+       XSS-safe HTML escape
+    ────────────────────────────────────────────────────────────── */
+    function escHtml(v) {
+      return String(v ?? '')
+        .replace(/&/g,  '&amp;')
+        .replace(/</g,  '&lt;')
+        .replace(/>/g,  '&gt;')
+        .replace(/"/g,  '&quot;')
+        .replace(/'/g,  '&#039;');
+    }
+
+    /* ──────────────────────────────────────────────────────────────
+       UI helpers
+    ────────────────────────────────────────────────────────────── */
+    function renderStars(rating) {
+      const n     = Math.max(0, Math.min(5, Number(rating) || 0));
+      const full  = Math.floor(n);
+      const empty = 5 - full;
+      return (
+        `<span class="text-amazon-orange leading-none">${'★'.repeat(full)}</span>` +
+        `<span class="text-gray-300 leading-none">${'★'.repeat(empty)}</span>`
+      );
+    }
+
+    function getCategoryEmoji(name) {
+      const k = String(name || '').toLowerCase().trim();
+      if (CAT_EMOJI[k]) return CAT_EMOJI[k];
+      const match = Object.keys(CAT_EMOJI).find(key => k.includes(key));
+      return match ? CAT_EMOJI[match] : '🏷️';
+    }
+
+    function normalizeCategories(cats) {
+      if (!cats) return [];
+      if (Array.isArray(cats)) {
+        return cats.map(c =>
+          typeof c === 'string'
+            ? { name: c, count: null }
+            : { name: c.name || c.category || c.label || '', count: c.count ?? c.mentions ?? null }
+        ).filter(c => c.name);
+      }
+      if (typeof cats === 'object') {
+        return Object.entries(cats).map(([n, v]) => ({ name: n, count: v }));
+      }
+      return [];
+    }
+
+    function getDecisionStyle(d) {
+      const u = String(d || '').toUpperCase();
+      if (u.includes('APPROV'))                       return { bg: 'bg-green-100',  text: 'text-green-700'  };
+      if (u.includes('MONITOR'))                      return { bg: 'bg-yellow-100', text: 'text-yellow-700' };
+      if (u.includes('REMOV'))                        return { bg: 'bg-red-100',    text: 'text-red-700'    };
+      if (u.includes('FLAG') || u.includes('REVIEW')) return { bg: 'bg-orange-100', text: 'text-orange-700' };
+      return { bg: 'bg-gray-100', text: 'text-gray-700' };
+    }
+
+    /* ──────────────────────────────────────────────────────────────
+       Pipeline strip animation
+    ────────────────────────────────────────────────────────────── */
+    function setPipelineStripState(agentName) {
+      const activeId = AGENT_MAP[String(agentName || '').toLowerCase()];
+      if (!activeId) return;
+      const activeIdx = STRIP_ORDER.indexOf(activeId);
+
+      STRIP_ORDER.forEach((id, idx) => {
+        const sfx  = id.replace('strip-', '');
+        const card = document.getElementById(id);
+        const ind  = document.getElementById(`ind-${sfx}`);
+        const chk  = document.getElementById(`chk-${sfx}`);
+        if (!card) return;
+
+        if (idx < activeIdx) {
+          // ── Completed ──────────────────────────────────────────
+          card.style.borderColor = '#16a34a';   // green-600
+          card.style.boxShadow   = '';
+          if (ind) { ind.style.backgroundColor = '#16a34a'; ind.classList.remove('animate-pulse'); }
+          if (chk) chk.classList.remove('hidden');
+        } else if (idx === activeIdx) {
+          // ── Active ─────────────────────────────────────────────
+          card.style.borderColor = '#007185';   // amazon-teal
+          card.style.boxShadow   = '0 0 0 3px rgba(0,113,133,0.2)';
+          if (ind) { ind.style.backgroundColor = '#007185'; ind.classList.add('animate-pulse'); }
+          if (chk) chk.classList.add('hidden');
+        } else {
+          // ── Waiting ────────────────────────────────────────────
+          card.style.borderColor = '';
+          card.style.boxShadow   = '';
+          if (ind) { ind.style.backgroundColor = ''; ind.classList.remove('animate-pulse'); }
+          if (chk) chk.classList.add('hidden');
+        }
+      });
+    }
+
+    function resetPipelineStrip() {
+      STRIP_ORDER.forEach(id => {
+        const sfx  = id.replace('strip-', '');
+        const card = document.getElementById(id);
+        const ind  = document.getElementById(`ind-${sfx}`);
+        const chk  = document.getElementById(`chk-${sfx}`);
+        if (!card) return;
+        card.style.borderColor = '';
+        card.style.boxShadow   = '';
+        if (ind) { ind.style.backgroundColor = ''; ind.classList.remove('animate-pulse'); }
+        if (chk) chk.classList.add('hidden');
+      });
+    }
+
+    /* ──────────────────────────────────────────────────────────────
+       Progress bar
+    ────────────────────────────────────────────────────────────── */
+    function updateProgress(current, total, msg) {
+      const pct   = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
+      const bar   = document.getElementById('progress-bar');
+      const pctEl = document.getElementById('progress-pct');
+      const stEl  = document.getElementById('progress-status');
+      if (bar)              bar.style.width    = `${pct}%`;
+      if (pctEl)            pctEl.textContent  = `${pct}%`;
+      if (stEl && msg != null) stEl.textContent = String(msg);
+    }
+
+    /* ──────────────────────────────────────────────────────────────
+       Result card renderer
+    ────────────────────────────────────────────────────────────── */
+    function renderResultCard(r, marketplace) {
+      const riskKey   = String(r.risk_level || '').toUpperCase();
+      const ss        = SAFETY_STYLES[riskKey] || SAFETY_STYLES['LOW'];
+      const ratingNum = (Number(r.avg_rating) || 0).toFixed(1);
+      const totalRev  = Number(r.total_reviews || 0).toLocaleString();
+      const asinHref  = `https://${escHtml(marketplace)}/dp/${encodeURIComponent(r.asin || '')}`;
+      const ds        = getDecisionStyle(r.decision);
+
+      /* category pills */
+      const catPills = normalizeCategories(r.categories).map(c => {
+        const countPart = c.count != null
+          ? ` <span class="opacity-60 ml-0.5">(${escHtml(c.count)})</span>` : '';
+        return `<span class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 whitespace-nowrap">`
+             + `${getCategoryEmoji(c.name)} ${escHtml(c.name)}${countPart}</span>`;
+      }).join('');
+
+      /* pattern list items */
+      const patternItems = (Array.isArray(r.patterns) ? r.patterns : []).map(p =>
+        `<li class="flex gap-2 items-start text-sm text-gray-600">`
+       + `<span class="text-amazon-teal font-bold flex-shrink-0 mt-0.5">›</span>`
+       + `<span>${escHtml(p)}</span></li>`
+      ).join('');
+
+      /* action list items */
+      const actionItems = (Array.isArray(r.actions_taken) ? r.actions_taken : []).map(a =>
+        `<li class="flex gap-2 items-start text-sm text-gray-600">`
+       + `<span class="text-green-500 font-bold flex-shrink-0 mt-0.5">✓</span>`
+       + `<span>${escHtml(a)}</span></li>`
+      ).join('');
+
+      const decLabel = r.decision
+        ? escHtml(String(r.decision).replace(/_/g, ' '))
+        : '';
+
+      return `
+<div class="bg-white rounded-xl shadow-card border border-gray-200 p-6">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-start gap-4 pb-5 mb-5 border-b border-gray-100">
+    <div class="flex-1 min-w-0">
+      <h3 class="text-base font-semibold text-amazon-navy mb-1 truncate"
+          title="${escHtml(r.product_name || '')}">${escHtml(r.product_name || 'Unknown Product')}</h3>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+        <a href="${asinHref}" target="_blank" rel="noopener noreferrer"
+           class="font-mono text-amazon-teal hover:underline">${escHtml(r.asin || '')} ↗</a>
+        <span class="flex items-center gap-1.5">
+          ${renderStars(r.avg_rating)}
+          <span class="text-gray-700 font-medium">${escHtml(ratingNum)}</span>
+          <span class="text-gray-400">(${escHtml(totalRev)} reviews)</span>
+        </span>
+      </div>
+    </div>
+    <!-- Risk badge -->
+    <div class="flex-shrink-0">
+      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${ss.bg}">
+        <span class="w-2.5 h-2.5 rounded-full ${ss.dot} flex-shrink-0"></span>
+        <span class="font-bold text-sm ${ss.text}">${escHtml(ss.label)}</span>
+        ${r.primary_concern
+          ? `<span class="text-xs ${ss.text} opacity-70">(${escHtml(r.primary_concern)})</span>`
+          : ''}
+      </span>
+    </div>
+  </div>
+
+  ${catPills ? `
+  <!-- Category Breakdown -->
+  <div class="mb-5">
+    <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Category Breakdown</h4>
+    <div class="flex flex-wrap gap-2">${catPills}</div>
+  </div>` : ''}
+
+  ${patternItems ? `
+  <!-- Recurring Patterns -->
+  <div class="mb-5">
+    <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Recurring Patterns</h4>
+    <ul class="space-y-1.5">${patternItems}</ul>
+  </div>` : ''}
+
+  ${(r.positive_observations || r.negative_observations || r.reasoning) ? `
+  <!-- AI Observations & Reasoning -->
+  <div class="mb-5">
+    <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">AI Assessment</h4>
+    <div class="bg-gray-50 border border-gray-100 rounded-lg p-4 text-sm leading-relaxed space-y-2">
+      ${r.positive_observations ? `<p class="text-green-700"><strong>✅ Positive:</strong> ${escHtml(r.positive_observations)}</p>` : ''}
+      ${r.negative_observations ? `<p class="text-red-700"><strong>⚠️ Negative:</strong> ${escHtml(r.negative_observations)}</p>` : ''}
+      ${r.reasoning ? `<p class="text-gray-600"><strong>📝 Reasoning:</strong> ${escHtml(r.reasoning)}</p>` : ''}
+    </div>
+  </div>` : ''}
+
+  ${decLabel || actionItems ? `
+  <!-- Decision & Actions Taken -->
+  <div class="flex flex-col sm:flex-row gap-5 pt-5 border-t border-gray-100">
+    ${decLabel ? `
+    <div class="flex-shrink-0">
+      <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Decision</h4>
+      <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold ${ds.bg} ${ds.text}">${decLabel}</span>
+    </div>` : ''}
+    ${actionItems ? `
+    <div class="flex-1 min-w-0">
+      <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Actions Taken</h4>
+      <ul class="space-y-1">${actionItems}</ul>
+    </div>` : ''}
+  </div>` : ''}
+
+</div>`;
+    }
+
+    /* ──────────────────────────────────────────────────────────────
+       SSE stream (POST fetch + ReadableStream parser)
+    ────────────────────────────────────────────────────────────── */
+    async function streamAnalysis(asins, marketplace) {
+      const resp = await fetch('/analyze', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ asins, marketplace }),
+      });
+
+      if (!resp.ok) {
+        let msg = `HTTP ${resp.status}`;
+        try { const t = await resp.text(); if (t) msg += ': ' + t; } catch (_) {}
+        throw new Error(msg);
+      }
+
+      const reader  = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer    = '';
+
+      function flushChunk(chunk) {
+        if (!chunk.trim()) return;
+        let evtType = 'message', evtData = '';
+        for (const line of chunk.split('\n')) {
+          if (line.startsWith('event: '))     evtType = line.slice(7).trim();
+          else if (line.startsWith('data: ')) evtData = line.slice(6);
+        }
+        if (!evtData) return;
+        let parsed;
+        try { parsed = JSON.parse(evtData); } catch (_) { return; }
+        handleSSEEvent(evtType, parsed, marketplace);
+      }
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+
+          // SSE events are separated by double newline
+          const chunks = buffer.split('\n\n');
+          buffer = chunks.pop() ?? '';
+          chunks.forEach(flushChunk);
+        }
+        // Flush any remaining partial event
+        if (buffer.trim()) flushChunk(buffer);
+      } finally {
+        reader.releaseLock();
+      }
+    }
+
+    /* ──────────────────────────────────────────────────────────────
+       SSE event dispatcher
+    ────────────────────────────────────────────────────────────── */
+    function handleSSEEvent(type, data, marketplace) {
+      const resultsEl = document.getElementById('results-section');
+
+      switch (type) {
+        case 'start':
+          updateProgress(0, data.total || 1, 'Analysis started…');
+          break;
+
+        case 'progress': {
+          const cur = Number(data.current || 0);
+          const tot = Number(data.total   || 1);
+          const msg = data.status
+            ? (data.asin ? `[${data.asin}] ${data.status}` : data.status)
+            : 'Processing…';
+          updateProgress(cur, tot, msg);
+          if (data.agent) setPipelineStripState(data.agent);
+          break;
+        }
+
+        case 'result': {
+          const div = document.createElement('div');
+          div.innerHTML = renderResultCard(data, marketplace).trim();
+          if (div.firstElementChild) resultsEl.appendChild(div.firstElementChild);
+          break;
+        }
+
+        case 'error': {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+              <span class="text-red-400 text-base flex-shrink-0 mt-0.5">⚠</span>
+              <div>
+                <p class="text-sm font-semibold text-red-700">Failed: ${escHtml(data.asin || 'unknown ASIN')}</p>
+                <p class="text-xs text-red-600 mt-0.5">${escHtml(data.error || 'Unknown error')}</p>
+              </div>
+            </div>`;
+          if (div.firstElementChild) resultsEl.appendChild(div.firstElementChild);
+          break;
+        }
+
+        case 'done': {
+          const total = Number(data.total || 0);
+          updateProgress(total, Math.max(total, 1),
+            `Complete — ${total} ASIN${total !== 1 ? 's' : ''} analyzed`);
+          resetPipelineStrip();
+          setFormDisabled(false);
+          setTimeout(() => document.getElementById('progress-section').classList.add('hidden'), 2500);
+          break;
+        }
+      }
+    }
+
+    /* ──────────────────────────────────────────────────────────────
+       Form helpers
+    ────────────────────────────────────────────────────────────── */
+    function setFormDisabled(disabled) {
+      const btn = document.getElementById('analyze-btn');
+      const ta  = document.getElementById('asins-input');
+      const sel = document.getElementById('marketplace-select');
+      [btn, ta, sel].forEach(el => { el.disabled = disabled; });
+      btn.textContent = disabled ? 'Analyzing…' : 'Analyze';
+    }
+
+    /* ──────────────────────────────────────────────────────────────
+       Form submit handler
+    ────────────────────────────────────────────────────────────── */
+    document.getElementById('analyze-form').addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const ta    = document.getElementById('asins-input');
+      const asins = ta.value.trim();
+
+      if (!asins) {
+        ta.style.borderColor = '#f87171'; // red-400
+        ta.focus();
+        setTimeout(() => { ta.style.borderColor = ''; }, 2000);
+        return;
+      }
+
+      const marketplace = document.getElementById('marketplace-select').value;
+
+      // Reset
+      document.getElementById('results-section').innerHTML = '';
+      resetPipelineStrip();
+      setFormDisabled(true);
+      document.getElementById('progress-section').classList.remove('hidden');
+      updateProgress(0, 1, 'Connecting to analysis service…');
+
+      try {
+        await streamAnalysis(asins, marketplace);
+        // Safety net: re-enable form if 'done' event was missed
+        setFormDisabled(false);
+      } catch (err) {
+        console.error('Analysis error:', err);
+        updateProgress(0, 1, '⚠ ' + (err.message || 'Unexpected error'));
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+            <p class="text-sm font-semibold text-red-700">Analysis failed</p>
+            <p class="text-xs text-red-600 mt-1">${escHtml(err.message || 'Unknown error')}</p>
+          </div>`;
+        if (div.firstElementChild) {
+          document.getElementById('results-section').appendChild(div.firstElementChild);
+        }
+        resetPipelineStrip();
+        setFormDisabled(false);
+      }
+    });
+  </script>
+</body>
+</html>
