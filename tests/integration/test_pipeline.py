@@ -1,5 +1,5 @@
-from unittest.mock import patch, MagicMock
 import json
+from unittest.mock import patch
 
 from agents.review_analyzer import analyze_reviews_data
 
@@ -48,7 +48,7 @@ class TestFullPipeline:
         }
         with patch("agents.review_analyzer._call_nova_micro") as mock_nova, patch(
             "agents.review_analyzer._call_haiku"
-        ) as mock_haiku, patch("agents.review_analyzer._sns") as mock_sns, patch(
+        ) as mock_haiku, patch("agents.review_analyzer._sns"), patch(
             "agents.review_analyzer._cw"
         ) as mock_cw:
             mock_nova.return_value = json.dumps({"patterns": ["Test pattern"]})

@@ -16,13 +16,14 @@ Sentiment categories analyzed:
 """
 
 import json
+import logging
 import os
 import re
 
 import boto3
 
-from config import MODEL_ID_AGENT, MODEL_ID_TOOLS, AWS_REGION, CLOUDWATCH_NAMESPACE
-import logging
+from config import AWS_REGION, CLOUDWATCH_NAMESPACE, MODEL_ID_AGENT, MODEL_ID_TOOLS
+
 logger = logging.getLogger("vista.analyzer")
 
 # ── AWS clients ────────────────────────────────────────────────────────────────
@@ -121,7 +122,7 @@ Output ONLY valid JSON:
   "reasoning": "2-3 sentence overall assessment balancing positives and negatives",
   "is_life_safety_risk": true | false
 }
-No prose, just JSON."""
+No prose, just JSON."""  # noqa: E501 -- prompt text; wrapping it changes what the model reads
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -316,15 +317,22 @@ def _rule_based_assessment(triage: dict) -> dict:
     total = triage.get("total_reviews", 0)
     pos_count = total - triage.get("negative_review_count", 0)
 
-    positive_obs = f"{pos_count}/{total} reviews are positive (avg {avg}★)." if total > 0 else "No reviews available."
-    
+    positive_obs = (
+        f"{pos_count}/{total} reviews are positive (avg {avg}★)."
+        if total > 0
+        else "No reviews available."
+    )
+
     if severity == "CRITICAL":
         return {
             "level": "CRITICAL",
             "primary_concern": top,
             "positive_observations": positive_obs,
             "negative_observations": f"{pct * 100:.0f}% of reviews report serious {top} issues.",
-            "reasoning": f"{pct * 100:.0f}% of reviews contain negative signals. Primary concern: {top}. {positive_obs}",
+            "reasoning": (
+                f"{pct * 100:.0f}% of reviews contain negative signals. "
+                f"Primary concern: {top}. {positive_obs}"
+            ),
             "is_life_safety_risk": top == "safety",
         }
     elif severity == "HIGH":
@@ -333,7 +341,9 @@ def _rule_based_assessment(triage: dict) -> dict:
             "primary_concern": top,
             "positive_observations": positive_obs,
             "negative_observations": f"{pct * 100:.0f}% of reviews report {top} problems.",
-            "reasoning": f"{pct * 100:.0f}% of reviews report issues (primarily: {top}). {positive_obs}",
+            "reasoning": (
+                f"{pct * 100:.0f}% of reviews report issues (primarily: {top}). {positive_obs}"
+            ),
             "is_life_safety_risk": top == "safety",
         }
     elif severity == "WARNING":
@@ -342,7 +352,10 @@ def _rule_based_assessment(triage: dict) -> dict:
             "primary_concern": top,
             "positive_observations": positive_obs,
             "negative_observations": f"{pct * 100:.0f}% of reviews mention {top} concerns.",
-            "reasoning": f"Mixed reviews: {pct * 100:.0f}% mention concerns (top: {top}), but {positive_obs}",
+            "reasoning": (
+                f"Mixed reviews: {pct * 100:.0f}% mention concerns (top: {top}), "
+                f"but {positive_obs}"
+            ),
             "is_life_safety_risk": False,
         }
     return {
@@ -350,7 +363,9 @@ def _rule_based_assessment(triage: dict) -> dict:
         "primary_concern": "none",
         "positive_observations": positive_obs,
         "negative_observations": "No significant complaints detected in review text.",
-        "reasoning": f"Generally positive product. {positive_obs} No recurring complaint patterns found.",
+        "reasoning": (
+            f"Generally positive product. {positive_obs} No recurring complaint patterns found."
+        ),
         "is_life_safety_risk": False,
     }
 
@@ -399,7 +414,9 @@ def run_safety_agent(triage: dict, patterns: list) -> dict:
     except Exception as e:
         print(f"  [Assessment] Haiku failed ({e}), using rule-based fallback")
         result = _rule_based_assessment(triage)
-        icon = {"CRITICAL": "🔴", "HIGH": "🟠", "MEDIUM": "🟡", "LOW": "🟢"}.get(result["level"], "⚪")
+        icon = {"CRITICAL": "🔴", "HIGH": "🟠", "MEDIUM": "🟡", "LOW": "🟢"}.get(
+            result["level"], "⚪"
+        )
         print(f"  Risk Level: {icon} {result['level']} (fallback)")
         return result
 
@@ -515,7 +532,7 @@ def analyze_reviews_data(data: dict) -> dict:
     product_info = {"asin": asin, "name": name, "marketplace": marketplace}
 
     print(f"\n{'═' * 60}")
-    print(f"  PRODUCT REVIEW INTELLIGENCE")
+    print("  PRODUCT REVIEW INTELLIGENCE")
     print(f"  {name}")
     print(f"  ASIN: {asin} | {marketplace}")
     print(f"{'═' * 60}")

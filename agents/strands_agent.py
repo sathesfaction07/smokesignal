@@ -18,7 +18,7 @@ import re
 from strands import Agent
 from strands.models.bedrock import BedrockModel
 
-from config import MODEL_ID_AGENT, AWS_REGION
+from config import AWS_REGION, MODEL_ID_AGENT
 
 logger = logging.getLogger("vista.agentcore")
 

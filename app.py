@@ -8,15 +8,15 @@ Endpoints:
 
 import json
 import os
+import re as _re
 
 from flask import Flask, Response, request, send_from_directory
 
 from agents.review_analyzer import (
-    analyze_reviews_data,
-    run_triage,
+    run_action_decision,
     run_pattern_analysis,
     run_safety_assessment,
-    run_action_decision,
+    run_triage,
 )
 from agents.review_fetcher import fetch_reviews_streaming
 from monitoring.daily_cache import get_cached_result, save_result
@@ -26,8 +26,6 @@ from monitoring.token_tracker import BudgetExceededError
 # Initialize structured logging
 setup_logging("INFO")
 
-
-import re as _re
 
 # Amazon ASIN pattern: 10 alphanumeric characters starting with B0 or a digit
 _ASIN_PATTERN = _re.compile(r'\b([A-Z0-9]{10})\b')
@@ -131,7 +129,16 @@ def analyze():
         # Serve cached results immediately
         for i, asin in enumerate(asins):
             if asin in cached_results:
-                yield f"event: progress\ndata: {json.dumps({'current': i + 1, 'total': total, 'asin': asin, 'status': 'cached', 'agent': None})}\n\n"
+                payload = json.dumps(
+                    {
+                        "current": i + 1,
+                        "total": total,
+                        "asin": asin,
+                        "status": "cached",
+                        "agent": None,
+                    }
+                )
+                yield f"event: progress\ndata: {payload}\n\n"
                 yield f"event: result\ndata: {json.dumps(cached_results[asin])}\n\n"
 
         # Fetch uncached ASINs (multi-tab parallel)
@@ -142,17 +149,30 @@ def analyze():
                 i = asins.index(asin) + 1
 
                 # Progress: fetching
-                yield f"event: progress\ndata: {json.dumps({'current': i, 'total': total, 'asin': asin, 'status': 'fetching', 'agent': None})}\n\n"
+                payload = json.dumps(
+                    {
+                        "current": i,
+                        "total": total,
+                        "asin": asin,
+                        "status": "fetching",
+                        "agent": None,
+                    }
+                )
+                yield f"event: progress\ndata: {payload}\n\n"
 
                 if not fetch_result["success"]:
-                    yield f"event: error\ndata: {json.dumps({'asin': asin, 'error': fetch_result['error']})}\n\n"
+                    payload = json.dumps({'asin': asin, 'error': fetch_result['error']})
+                    yield f"event: error\ndata: {payload}\n\n"
                     continue
 
                 review_data = fetch_result["data"]
                 reviews = review_data.get("reviews", [])
 
                 if not reviews:
-                    yield f"event: error\ndata: {json.dumps({'asin': asin, 'error': 'No reviews found on product page'})}\n\n"
+                    payload = json.dumps(
+                        {"asin": asin, "error": "No reviews found on product page"}
+                    )
+                    yield f"event: error\ndata: {payload}\n\n"
                     continue
 
                 product_info = {
@@ -163,19 +183,58 @@ def analyze():
 
                 try:
                     # Stage 1 — Triage
-                    yield f"event: progress\ndata: {json.dumps({'current': i, 'total': total, 'asin': asin, 'status': 'triage', 'agent': '\U0001f4cb Triage Agent: Scanning for negative signals...'})}\n\n"
+                    payload = json.dumps(
+                        {
+                            "current": i,
+                            "total": total,
+                            "asin": asin,
+                            "status": "triage",
+                            "agent": "\U0001f4cb Triage Agent: Scanning for negative signals...",
+                        }
+                    )
+                    yield f"event: progress\ndata: {payload}\n\n"
                     triage = run_triage(reviews)
 
                     # Stage 2 — Patterns
-                    yield f"event: progress\ndata: {json.dumps({'current': i, 'total': total, 'asin': asin, 'status': 'patterns', 'agent': '\U0001f52c Pattern Agent (Nova Micro): Identifying themes...'})}\n\n"
+                    payload = json.dumps(
+                        {
+                            "current": i,
+                            "total": total,
+                            "asin": asin,
+                            "status": "patterns",
+                            "agent": "\U0001f52c Pattern Agent (Nova Micro): Identifying themes...",
+                        }
+                    )
+                    yield f"event: progress\ndata: {payload}\n\n"
                     patterns = run_pattern_analysis(reviews, triage)
 
                     # Stage 3 — Quality & Safety Assessment
-                    yield f"event: progress\ndata: {json.dumps({'current': i, 'total': total, 'asin': asin, 'status': 'safety', 'agent': '\U0001f6e1\ufe0f Quality Agent (Claude Haiku 4.5): Assessing product health...'})}\n\n"
+                    payload = json.dumps(
+                        {
+                            "current": i,
+                            "total": total,
+                            "asin": asin,
+                            "status": "safety",
+                            "agent": (
+                                "\U0001f6e1\ufe0f Quality Agent (Claude Haiku 4.5): "
+                                "Assessing product health..."
+                            ),
+                        }
+                    )
+                    yield f"event: progress\ndata: {payload}\n\n"
                     safety = run_safety_assessment(reviews, patterns, triage)
 
                     # Stage 4 — Action
-                    yield f"event: progress\ndata: {json.dumps({'current': i, 'total': total, 'asin': asin, 'status': 'action', 'agent': '\u26a1 Action Agent: Deciding next steps...'})}\n\n"
+                    payload = json.dumps(
+                        {
+                            "current": i,
+                            "total": total,
+                            "asin": asin,
+                            "status": "action",
+                            "agent": "\u26a1 Action Agent: Deciding next steps...",
+                        }
+                    )
+                    yield f"event: progress\ndata: {payload}\n\n"
                     actions = run_action_decision(product_info, triage, patterns, safety)
 
                     # Build result
@@ -208,7 +267,7 @@ def analyze():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    print(f"\n━━━ Vista ━━━")
+    print("\n━━━ Vista ━━━")
     print(f"    http://localhost:{port}")
-    print(f"    Press Ctrl+C to stop\n")
+    print("    Press Ctrl+C to stop\n")
     app.run(host="0.0.0.0", port=port, debug=False)

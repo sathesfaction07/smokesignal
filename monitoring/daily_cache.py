@@ -6,7 +6,6 @@ On a new day, all previous cache files are auto-deleted.
 """
 
 import json
-import os
 from datetime import date
 from pathlib import Path
 

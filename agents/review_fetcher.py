@@ -5,18 +5,17 @@ Uses Chrome headless with multi-tab parallel loading for speed.
 Includes graceful browser cleanup on unexpected termination.
 """
 
-import sys
-import time
 import atexit
 import signal
+import sys
 import weakref
 
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812 -- Selenium's documented alias
+from selenium.webdriver.support.ui import WebDriverWait
 
 from config import MARKETPLACES
 
@@ -132,7 +131,9 @@ def _extract_reviews(driver):
                     "span[data-hook='review-title'] span:not([class*='a-letter-space']), "
                     "[data-hook='review-title']"
                 )
-                review["title"] = title_els[-1].get_attribute("textContent").strip() if title_els else ""
+                review["title"] = (
+                    title_els[-1].get_attribute("textContent").strip() if title_els else ""
+                )
             except Exception:
                 review["title"] = ""
             # Body: /dp/ uses review-body or reviewRichContentContainer
@@ -186,7 +187,9 @@ def fetch_reviews(asin: str, marketplace: str = "US") -> dict:
         driver.get(url)
         try:
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-hook='review'], #productTitle"))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "div[data-hook='review'], #productTitle")
+                )
             )
         except TimeoutException:
             pass
@@ -237,7 +240,9 @@ def fetch_reviews_batch(asins: list, marketplace: str = "US") -> list:
             driver.switch_to.window(handle)
             try:
                 WebDriverWait(driver, 10 if i == 0 else 3).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-hook='review'], #productTitle"))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, "div[data-hook='review'], #productTitle")
+                    )
                 )
             except TimeoutException:
                 pass
@@ -289,7 +294,9 @@ def fetch_reviews_streaming(asins: list, marketplace: str = "US"):
             driver.switch_to.window(handle)
             try:
                 WebDriverWait(driver, 10 if i == 0 else 3).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-hook='review'], #productTitle"))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, "div[data-hook='review'], #productTitle")
+                    )
                 )
             except TimeoutException:
                 pass

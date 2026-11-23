@@ -1,11 +1,12 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
+
 from botocore.exceptions import ClientError
 
 from agents.review_analyzer import (
-    run_pattern_agent,
-    run_safety_agent,
     _fallback_patterns,
     _rule_based_assessment,
+    run_pattern_agent,
+    run_safety_agent,
 )
 
 
@@ -200,7 +201,7 @@ class TestFallbackOverAIComparison:
 class TestBudgetExceededFallsBackGracefully:
     def test_pattern_agent_falls_back_on_budget_exceeded(self, sample_reviews):
         """Budget exhaustion triggers fallback, not error propagation.
-        
+
         This test verifies cost control: after budget is hit, no further paid API
         calls occur, and the system degrades to deterministic keyword-based patterns.
         """
@@ -210,11 +211,11 @@ class TestBudgetExceededFallsBackGracefully:
             mock_nova.side_effect = BudgetExceededError("Budget exceeded")
             # Should NOT raise — should fall back gracefully
             result = run_pattern_agent({"reviews": sample_reviews})
-            
+
             # Verify fallback logic ran
             assert isinstance(result, list)
             assert len(result) > 0  # Deterministic fallback produces patterns
-            
+
             # Verify no retry — only one attempted call proves budget guard worked
             assert mock_nova.call_count == 1
 
@@ -222,7 +223,7 @@ class TestBudgetExceededFallsBackGracefully:
         self, sample_triage_result, sample_patterns
     ):
         """Budget exhaustion triggers rule-based assessment, not error propagation.
-        
+
         This test verifies cost control: after budget is hit, no further paid API
         calls occur, and the system degrades to conservative rule-based risk scoring.
         """
@@ -232,12 +233,12 @@ class TestBudgetExceededFallsBackGracefully:
             mock_haiku.side_effect = BudgetExceededError("Budget exceeded")
             # Should NOT raise — should fall back gracefully
             result = run_safety_agent(sample_triage_result, sample_patterns)
-            
+
             # Verify fallback logic ran
             assert "level" in result
             assert result["level"] in ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
             assert "primary_concern" in result
             assert "reasoning" in result
-            
+
             # Verify no retry — only one attempted call proves budget guard worked
             assert mock_haiku.call_count == 1

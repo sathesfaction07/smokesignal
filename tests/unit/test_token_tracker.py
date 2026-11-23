@@ -1,14 +1,14 @@
 from datetime import date
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
+from config import MODEL_ID_AGENT, MODEL_ID_TOOLS, PRICING
 from monitoring.token_tracker import (
-    TokenTracker,
-    BudgetExceededError,
     DAILY_BUDGET_USD,
+    BudgetExceededError,
+    TokenTracker,
 )
-from config import PRICING, MODEL_ID_TOOLS, MODEL_ID_AGENT
 
 
 class TestTokenAccounting:

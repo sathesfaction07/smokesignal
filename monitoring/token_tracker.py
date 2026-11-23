@@ -96,10 +96,17 @@ class TokenTracker:
                 MetricData=[
                     {"MetricName": "TokensUsedTotal", "Value": self.total_tokens, "Unit": "Count"},
                     {"MetricName": "CostUSD", "Value": self.total_cost, "Unit": "None"},
-                    {"MetricName": "BudgetUtilizationPct", "Value": self.budget_utilization_pct, "Unit": "Percent"},
+                    {
+                        "MetricName": "BudgetUtilizationPct",
+                        "Value": self.budget_utilization_pct,
+                        "Unit": "Percent",
+                    },
                 ],
             )
-            logger.info(f"CloudWatch metrics published: tokens={self.total_tokens}, cost=${self.total_cost:.4f}")
+            logger.info(
+                f"CloudWatch metrics published: tokens={self.total_tokens}, "
+                f"cost=${self.total_cost:.4f}"
+            )
         except Exception as e:
             logger.warning(f"CloudWatch publish failed (non-fatal): {e}")
 

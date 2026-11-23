@@ -1,5 +1,3 @@
-import json
-from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
@@ -10,12 +8,18 @@ def sample_reviews():
     return [
         {
             "title": "Never went off during CO leak",
-            "body": "Had an actual carbon monoxide leak confirmed by fire dept. This detector sat there silently. Dangerous product.",
+            "body": (
+                "Had an actual carbon monoxide leak confirmed by fire dept. "
+                "This detector sat there silently. Dangerous product."
+            ),
             "rating": 1.0,
         },
         {
             "title": "Stopped working after 3 months",
-            "body": "Broke after just 3 months. Cheap quality plastic, fell apart when I tried to change battery.",
+            "body": (
+                "Broke after just 3 months. Cheap quality plastic, "
+                "fell apart when I tried to change battery."
+            ),
             "rating": 1.0,
         },
         {
@@ -25,7 +29,10 @@ def sample_reviews():
         },
         {
             "title": "Not as described",
-            "body": "Product looks nothing like the picture. Smaller than expected, feels like a knockoff.",
+            "body": (
+                "Product looks nothing like the picture. "
+                "Smaller than expected, feels like a knockoff."
+            ),
             "rating": 2.0,
         },
         {
@@ -109,7 +116,10 @@ def sample_triage_result():
         },
         "top_concern": "quality",
         "severity": "CRITICAL",
-        "reasoning": "5/8 reviews (62%) contain negative signals. Breakdown: safety: 2 | quality: 3 | packaging: 1 | misleading: 1 | disappointment: 2. Top concern: quality.",
+        "reasoning": (
+            "5/8 reviews (62%) contain negative signals. Breakdown: safety: 2 | quality: 3 | "
+            "packaging: 1 | misleading: 1 | disappointment: 2. Top concern: quality."
+        ),
     }
 
 

@@ -1,6 +1,6 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-from agents.review_analyzer import run_action_agent, _DECISION_RULES
+from agents.review_analyzer import _DECISION_RULES, run_action_agent
 
 
 class TestActionDecisionRules:

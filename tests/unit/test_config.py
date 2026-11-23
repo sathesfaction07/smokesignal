@@ -1,4 +1,4 @@
-from config import MARKETPLACES, AWS_REGION, MODEL_ID_TOOLS, MODEL_ID_AGENT, PRICING
+from config import AWS_REGION, MARKETPLACES, MODEL_ID_AGENT, MODEL_ID_TOOLS, PRICING
 
 
 class TestMarketplaceMapping:

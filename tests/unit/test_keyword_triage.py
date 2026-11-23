@@ -1,10 +1,5 @@
 from agents.review_analyzer import (
     _keyword_scan,
-    run_triage_agent,
-    SENTIMENT_KEYWORDS,
-    CRITICAL_THRESHOLD,
-    HIGH_THRESHOLD,
-    WARNING_THRESHOLD,
 )
 
 
@@ -29,7 +24,9 @@ class TestKeywordDetection:
         assert result["category_breakdown"]["packaging"] == 1
 
     def test_detects_misleading_keywords(self):
-        reviews = [{"title": "Fake", "body": "Not as described, looks like a knockoff.", "rating": 1.0}]
+        reviews = [
+            {"title": "Fake", "body": "Not as described, looks like a knockoff.", "rating": 1.0}
+        ]
         result = _keyword_scan(reviews)
         assert result["category_breakdown"]["misleading"] == 1
 
