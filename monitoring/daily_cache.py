@@ -31,7 +31,7 @@ def _load_cache() -> dict:
     """Load today's cache from disk."""
     path = _cache_file()
     if path.exists():
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     return {}
 
@@ -39,7 +39,7 @@ def _load_cache() -> dict:
 def _save_cache(cache: dict):
     """Save cache to disk."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    with open(_cache_file(), "w") as f:
+    with open(_cache_file(), "w", encoding="utf-8") as f:
         json.dump(cache, f, indent=2)
 
 
