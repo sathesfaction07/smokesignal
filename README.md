@@ -119,7 +119,7 @@ smokesignal/
 └── tests/                      (not present — manual testing via web UI)
 ```
 
-**Note on testing:** This project does not have an automated test suite. It is tested manually via the web UI and by running the Strands demo. The absence of `pytest` tests is intentional simplicity for a portfolio demonstration.
+**Note on testing:** `pytest` runs 108 tests in CI on Python 3.10–3.12 and on Windows. The tests cover keyword triage, the action decision, configuration, the daily cache, token tracking and the fallbacks when Bedrock is unavailable or over budget, plus one pipeline integration test with Bedrock, SNS and CloudWatch mocked. Live Selenium review fetching and real Bedrock calls are not covered and are checked manually through the web UI and the Strands demo.
 
 ---
 
@@ -295,7 +295,7 @@ Selected via dropdown in the web UI.
 
 **Fallback to rule-based on AI failure.** If Bedrock is unavailable or a prompt fails, Stages 2 and 3 fall back to deterministic logic. The service never returns an error to the user. The fallback is conservative — it flags more and misses less — so degraded mode is safer than failing. The tradeoff is that some results are less accurate, but availability beats precision for this use case.
 
-**No automated tests.** I built this as a portfolio demonstration of Bedrock AgentCore, token tracking, CloudWatch integration, and multi-stage pipeline design — not as a production service. Writing a test suite would require mocking Bedrock responses, Selenium WebDriver, and SNS, which is substantial work for marginal demonstration value. The project is tested manually via the web UI, and the absence of tests is documented honestly in the README. If this were production code, I would add pytest fixtures for all stages.
+**Tests stop at the network.** The tests cover keyword triage, the action decision, configuration, the daily cache, token tracking and the fallbacks when Bedrock is unavailable or over budget, plus one pipeline integration test with Bedrock, SNS and CloudWatch mocked. What they do not cover is the live part: Selenium fetching real review pages and real Bedrock responses. Those are checked manually through the web UI; testing them automatically would need recorded pages and recorded model responses.
 
 ---
 

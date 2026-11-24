@@ -73,7 +73,7 @@ This lacks the nuanced reasoning Haiku provides, but it's conservative — it fl
 - **A misconfiguration looks like a transient failure:** If the model ID is wrong or IAM permissions are missing, *every* request hits the fallback. The user sees plausible results (because fallbacks work) but is unknowingly paying $0 instead of $0.004 per product. The cost savings might mask the problem. Mitigation: Setup script verifies Bedrock access; first successful AI call logs to CloudWatch.
 
 **Neutral**
-- **Fallbacks are domain logic, not infrastructure:** The keyword grouping and threshold scoring are hardcoded in `review_analyzer.py`. Changing the thresholds requires a code change, not a config tweak. This is acceptable for a portfolio demo but would need externalization (config file, database) for a production service.
+- **Fallbacks are domain logic, not infrastructure:** The keyword grouping and threshold scoring are hardcoded in `review_analyzer.py`. Changing the thresholds requires a code change, not a config tweak. This is acceptable for a demo but would need externalization (config file, database) for a production service.
 
 ## Alternatives Considered
 

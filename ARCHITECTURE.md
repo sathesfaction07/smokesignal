@@ -526,7 +526,9 @@ MARKETPLACES = {
 
 ## Testing
 
-**No automated test suite.** This is a portfolio demonstration, not production software.
+**Automated:** `pytest` runs 108 tests in CI on Python 3.10–3.12 and on Windows. The tests cover keyword triage, the action decision, configuration, the daily cache, token tracking and the fallbacks when Bedrock is unavailable or over budget, plus one pipeline integration test with Bedrock, SNS and CloudWatch mocked.
+
+**Not automated:** live Selenium review fetching and real Bedrock calls.
 
 **Manual testing via web UI:**
 1. Start `python app.py`
