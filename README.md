@@ -2,6 +2,8 @@
 
 A 4-stage AI pipeline that analyzes Amazon product reviews to detect safety and quality risks. Given an ASIN (Amazon product ID), it scrapes customer reviews, scans for complaint keywords, groups themes with Amazon Nova Micro, assesses risk with Claude Haiku 4.5, and routes flagged products to SNS email alerts. Cost per product: ~$0.004. Daily cache prevents reprocessing; budget enforcement stops at a configurable spending cap.
 
+**Engagement readout:** [ENGAGEMENT.md](ENGAGEMENT.md) describes how this would be scoped, proven and rolled out for a customer, including what is not yet measured.
+
 ---
 
 ## The Problem
